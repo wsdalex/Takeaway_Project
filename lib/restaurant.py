@@ -84,9 +84,9 @@ class Restaurant():
         time = datetime.now() + timedelta(minutes=20)
         delivery_time = f'{time.hour}:{time.minute}'
         message = client.messages.create(
-        from_='+447429634908',
+        from_= os.environ['FROM_NUM'],
         body=f'Thanks for ordering! Your delivery will be with you at {delivery_time}',
-        to='+447568144268'
+        to= os.environ['TO_NUM']
         )
 
         print(message.sid)
