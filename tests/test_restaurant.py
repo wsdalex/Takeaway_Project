@@ -52,3 +52,11 @@ def test_sending_email():
     requestor.post.return_value = response
     response.ok = True
     assert restaurant.send_confirmation_email(requestor).ok == True
+
+def test_sending_text():
+    restaurant = Restaurant()
+    client = Mock()
+    message = Mock()
+    client.messages.create.return_value = message
+    message.sid = 'Message was succesfully sent'
+    assert restaurant.send_confirmation_text(client).sid == 'Message was succesfully sent'

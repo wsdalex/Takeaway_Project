@@ -1,12 +1,16 @@
 from dotenv import load_dotenv
 import os
 from datetime import datetime, timedelta
+from twilio.rest import Client
+
 load_dotenv()
 
-api_key = os.environ['DEV_KEY']
+email_api_key = os.environ['DEV_KEY']
 domain = os.environ['DOMAIN']
 recipient_email = os.environ['EMAIL']
-
+account_sid = os.environ['SID']
+auth_token = os.environ['AUTH_TOKEN']
+client = Client(account_sid, auth_token)
 
 class Restaurant():
     def __init__(self):
@@ -58,7 +62,7 @@ class Restaurant():
         # Make the API request to send an email
         response = requestor.post(
             f"https://api.mailgun.net/v3/{domain}/messages",
-            auth=("api", api_key),
+            auth=("api", email_api_key),
             data={
                 "from": sender_email,
                 "to": recipient_email,
@@ -76,3 +80,14 @@ class Restaurant():
             print(f"Response Body: {response.text}")
         return response
     
+    def send_confirmation_text(self, client):
+        time = datetime.now() + timedelta(minutes=20)
+        delivery_time = f'{time.hour}:{time.minute}'
+        message = client.messages.create(
+        from_='+447429634908',
+        body=f'Thanks for ordering! Your delivery will be with you at {delivery_time}',
+        to='+447568144268'
+        )
+
+        print(message.sid)
+        return message
